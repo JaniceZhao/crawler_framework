@@ -44,7 +44,7 @@ class Douban_Moive(object):
 
             if not self.workspace.has_crawled_this_meta_url(url):
 
-                response = self.crawler.try_crawl_url(url)
+                response = self.crawler.try_crawl_url(url, headers=None, timeout=10)
                 book_info = json.loads(response)["books"] if response else []
                 book_urls = [Website(book['alt'], {'id':book['id'], 'title':book['title'], 'tag':tag}) for book in book_info]
 
@@ -83,7 +83,7 @@ class Douban_Moive(object):
 
     def crawl_one_trunk_comments_(self, urls):
 
-        responses = self.crawler.try_group_crawl_url(urls)
+        responses = self.crawler.try_group_crawl_url(urls, headers=None, timeout=20)
         comments = list(itertools.chain.from_iterable(map(self.parse_comments_from_response_, responses)))
         return comments
 
@@ -105,7 +105,7 @@ class Douban_Moive(object):
 
         comments_num = 0
 
-        response = self.crawler.try_crawl_url(self.append_page2comment_url_(url, 1))
+        response = self.crawler.try_crawl_url(self.append_page2comment_url_(url, 1), headers=None, timeout=10)
 
         if not response == None:
             comments_html = BeautifulSoup(response, "html.parser").find("span", {"id": "total-comments"})
@@ -156,7 +156,7 @@ class Douban_Moive(object):
     BOOK_INFO_NUM_PER_QUERY = 100
     MAX_BOOK_LISTS_NUM = 5
     MAX_PAGE = 400
-    CHUNK_SIZE = 10
+    CHUNK_SIZE = 40
 
 
     TAGS = ["小说", "外国文学", "文学", "随笔", "中国文学", "经典", "日本文学", "散文", "村上春树", 

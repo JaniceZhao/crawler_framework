@@ -113,8 +113,9 @@ class WorkSpace(object):
         else:
             self.working_urls = set()
             self.meta_urls = set()
-            self.db = Database('db', 50)
-
+            self.db = Database('db', 16384)
+            self.save()
+            
         self._regular_backup()
 
     def save(self):     

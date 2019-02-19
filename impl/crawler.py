@@ -17,12 +17,12 @@ class Crawler(object):
         self.proxy_host_checker = re.compile("^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,6}")
 
 
-    def try_crawl_url(self, url):
+    def try_crawl_url(self, url, **kwargs):
 
         for try_times in range(self.MAX_TRY_TIMES):
             try:
                 self.update_proxy_()
-                response = requests.get(url, proxies={"https": self.proxy_host}, headers=self.REQUEST_HEADER, timeout=10)
+                response = requests.get(url, proxies={"https": self.proxy_host}, **kwargs)
                 if response and response.status_code == 200:
                     return response.text
             except Exception as e:
@@ -32,13 +32,13 @@ class Crawler(object):
 
 
 
-    def try_group_crawl_url(self, urls):
+    def try_group_crawl_url(self, urls, **kwargs):
 
 
         for try_times in range(self.MAX_TRY_TIMES):
             try:
                 self.update_proxy_()
-                reqs = map(lambda x:grequests.get(x, proxies={"https": self.proxy_host}, headers=self.REQUEST_HEADER, timeout=20), urls)
+                reqs = map(lambda x:grequests.get(x, proxies={"https": self.proxy_host}, **kwargs), urls)
                 responses = grequests.map(reqs)
                 good_responses = list(filter(lambda x: x and x.status_code == 200, responses))
 
